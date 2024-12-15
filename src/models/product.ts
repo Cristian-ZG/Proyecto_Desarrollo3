@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db/connection';
 
-export const Product = sequelize.define('product',{
+export const Product = sequelize.define('Product',{
     product_id:{
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -14,7 +14,10 @@ export const Product = sequelize.define('product',{
     },
     description:{
         type: DataTypes.STRING,
-        unique: true,
+        allowNull: false
+    },
+    price:{
+        type: DataTypes.DOUBLE,
         allowNull: false
     }
 })

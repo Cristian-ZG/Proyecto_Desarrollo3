@@ -8,9 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProduct = exports.getProducts = exports.updateProduct = exports.newProduct = void 0;
+exports.getProductWithRating = exports.getProductsWithRatings = exports.getProduct = exports.getProducts = exports.updateProduct = exports.newProduct = void 0;
 const product_1 = require("../models/product");
+const review_1 = require("../models/review");
+const connection_1 = __importDefault(require("../db/connection"));
 // Agregar producto
 const newProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
@@ -74,3 +79,72 @@ const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getProduct = getProduct;
+const getProductsWithRatings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield product_1.Product.findAll({
+            attributes: ["product_id", "name", "description", "price",
+                [
+                    connection_1.default.fn("IFNULL", connection_1.default.fn("ROUND", connection_1.default.fn("AVG", connection_1.default.col("Reviews.rating"))), 0), "average_rating",
+                ],
+                [
+                    connection_1.default.fn("IFNULL", connection_1.default.fn("COUNT", connection_1.default.col("Reviews.review_id")), 0), "rating_count",
+                ],
+            ],
+            include: [
+                {
+                    model: review_1.Review,
+                    attributes: [],
+                },
+            ],
+            group: ["Product.product_id"],
+        });
+        res.json({
+            products,
+        });
+    }
+    catch (error) {
+        console.error("Error al obtener productos:", error);
+        res.status(500).json({
+            msg: "Error al obtener productos.",
+        });
+    }
+});
+exports.getProductsWithRatings = getProductsWithRatings;
+const getProductWithRating = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { product_id } = req.params; // Se obtiene el product_id desde los parámetros de la ruta
+    try {
+        const product = yield product_1.Product.findOne({
+            attributes: ["product_id", "name", "description", "price",
+                [
+                    connection_1.default.fn("IFNULL", connection_1.default.fn("ROUND", connection_1.default.fn("AVG", connection_1.default.col("Reviews.rating"))), 0), "average_rating",
+                ],
+                [
+                    connection_1.default.fn("IFNULL", connection_1.default.fn("COUNT", connection_1.default.col("Reviews.review_id")), 0), "rating_count",
+                ],
+            ],
+            include: [
+                {
+                    model: review_1.Review,
+                    attributes: [],
+                },
+            ],
+            where: { product_id }, // Filtra por el producto específico
+            group: ["Product.product_id"],
+        });
+        if (!product) {
+            return res.status(404).json({
+                msg: "Producto no encontrado.",
+            });
+        }
+        res.json({
+            product,
+        });
+    }
+    catch (error) {
+        console.error("Error al obtener el producto:", error);
+        res.status(500).json({
+            msg: "Error al obtener el producto.",
+        });
+    }
+});
+exports.getProductWithRating = getProductWithRating;

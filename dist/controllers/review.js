@@ -11,19 +11,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteReview = exports.getReview = exports.getReviews = exports.updateReview = exports.newReview = void 0;
 const review_1 = require("../models/review");
+const product_1 = require("../models/product");
 // Agregar review
 const newReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body } = req;
+    const { product_id, user_name, rating, review_text } = req.body;
     try {
-        yield review_1.Review.create(body);
-        res.json({
-            msg: 'La opinion fue agregada correctamente.'
+        // Validar que el producto existe
+        const product = yield product_1.Product.findByPk(product_id);
+        if (!product) {
+            return res.status(404).json({
+                msg: `El producto con ID ${product_id} no existe.`
+            });
+        }
+        // Validar que el rating este dentro del rango permitido
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({
+                msg: 'El rating debe estar entre 1 y 5.'
+            });
+        }
+        // Crear la nueva review
+        yield review_1.Review.create({
+            product_id,
+            user_name,
+            rating,
+            review_text
+        });
+        res.status(201).json({
+            msg: 'La valoración fue agregada correctamente.'
         });
     }
     catch (error) {
-        console.log(error);
-        res.json({
-            msg: 'Ocurrio un error.'
+        console.error(error);
+        res.status(500).json({
+            msg: 'Ocurrió un error al intentar agregar la valoración.'
         });
     }
 });

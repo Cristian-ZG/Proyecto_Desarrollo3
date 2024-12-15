@@ -14,13 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const user_1 = __importDefault(require("../routes/user"));
 const product_1 = __importDefault(require("../routes/product"));
 const review_1 = __importDefault(require("../routes/review"));
-const productRating_1 = __importDefault(require("../routes/productRating"));
-const user_2 = require("./user");
 const product_2 = require("./product");
-const productRating_2 = require("./productRating");
 const review_2 = require("./review");
 class Server {
     constructor() {
@@ -37,10 +33,8 @@ class Server {
         });
     }
     routes() {
-        this.app.use('/api/user', user_1.default);
         this.app.use('/api/product', product_1.default);
         this.app.use('/api/review', review_1.default);
-        this.app.use('/api/productRating', productRating_1.default);
     }
     midlewares() {
         // Parseo body
@@ -51,9 +45,7 @@ class Server {
     dbConnect() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield user_2.User.sync();
                 yield product_2.Product.sync();
-                yield productRating_2.ProductRating.sync();
                 yield review_2.Review.sync();
                 console.log('Base de datos conectada correctamente.');
             }

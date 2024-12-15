@@ -1,12 +1,8 @@
 import express, {Application} from 'express';
 import cors from 'cors';
-import routesUser from "../routes/user"
 import routesProduct from "../routes/product";
 import routesReview from "../routes/review";
-import routesProductRating from "../routes/productRating"
-import { User } from './user';
 import { Product } from './product';
-import { ProductRating } from './productRating';
 import { Review } from './review';
 
 class Server{
@@ -29,10 +25,8 @@ class Server{
     }
 
     routes(){
-        this.app.use('/api/user', routesUser);
         this.app.use('/api/product', routesProduct);
         this.app.use('/api/review', routesReview);
-        this.app.use('/api/productRating', routesProductRating);
     }
 
     midlewares() {
@@ -45,9 +39,7 @@ class Server{
     async dbConnect(){
 
         try {
-            await User.sync();
             await Product.sync();
-            await ProductRating.sync();
             await Review.sync();
             console.log('Base de datos conectada correctamente.')
         } catch (error) {

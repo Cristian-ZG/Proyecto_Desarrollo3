@@ -1,9 +1,11 @@
 import { Router } from 'express';
-import { getProduct, getProducts, newProduct, updateProduct } from '../controllers/product';
+import { getProduct, getProducts, getProductsWithRatings, getProductWithRating, newProduct, updateProduct } from '../controllers/product';
 
 const router = Router();
 
-router.post('/', newProduct)
+router.post('/', newProduct);
+router.get('/ratings/', getProductsWithRatings);
+router.get('/rating/:product_id', getProductWithRating);
 router.get('/', getProducts);
 router.get('/:product_id', getProduct);
 router.put('/:product_id', updateProduct);

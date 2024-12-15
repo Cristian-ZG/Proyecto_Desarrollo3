@@ -6,22 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Review = void 0;
 const sequelize_1 = require("sequelize");
 const connection_1 = __importDefault(require("../db/connection"));
-const user_1 = require("./user");
 const product_1 = require("./product");
-exports.Review = connection_1.default.define('review', {
+exports.Review = connection_1.default.define('Review', {
     review_id: {
         type: sequelize_1.DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         unique: true
-    },
-    user_id: {
-        type: sequelize_1.DataTypes.INTEGER,
-        references: {
-            model: user_1.User,
-            key: 'user_id'
-        },
-        allowNull: false
     },
     product_id: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -29,6 +20,10 @@ exports.Review = connection_1.default.define('review', {
             model: product_1.Product,
             key: 'product_id'
         },
+        allowNull: false
+    },
+    user_name: {
+        type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
     rating: {
@@ -40,7 +35,5 @@ exports.Review = connection_1.default.define('review', {
         allowNull: false
     }
 });
-exports.Review.belongsTo(user_1.User, { foreignKey: 'user_id' });
-user_1.User.hasMany(exports.Review, { foreignKey: 'user_id' });
 exports.Review.belongsTo(product_1.Product, { foreignKey: 'product_id' });
 product_1.Product.hasMany(exports.Review, { foreignKey: 'product_id' });

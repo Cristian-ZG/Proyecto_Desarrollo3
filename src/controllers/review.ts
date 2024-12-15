@@ -1,21 +1,44 @@
 import { Request, Response } from 'express';
 import { Review } from '../models/review';
+import { Product } from '../models/product';
 
 // Agregar review
 export const newReview = async (req: Request, res: Response) => {
 
-    const { body } = req;
+    const { product_id, user_name, rating, review_text } = req.body;
 
     try {
-        await Review.create(body);
-        res.json({
-            msg: 'La opinion fue agregada correctamente.'
-        })
+        // Validar que el producto existe
+        const product = await Product.findByPk(product_id);
+        if (!product) {
+            return res.status(404).json({
+                msg: `El producto con ID ${product_id} no existe.`
+            });
+        }
+
+        // Validar que el rating este dentro del rango permitido
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({
+                msg: 'El rating debe estar entre 1 y 5.'
+            });
+        }
+
+        // Crear la nueva review
+        await Review.create({
+            product_id,
+            user_name,
+            rating,
+            review_text
+        });
+
+        res.status(201).json({
+            msg: 'La valoración fue agregada correctamente.'
+        });
     } catch (error) {
-        console.log(error)
-        res.json({
-            msg: 'Ocurrio un error.'
-        })
+        console.error(error);
+        res.status(500).json({
+            msg: 'Ocurrió un error al intentar agregar la valoración.'
+        });
     }
 }
 
