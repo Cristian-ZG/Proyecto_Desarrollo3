@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/', newProduct);
 router.get('/ratings/', getProductsWithRatings);
-router.get('/rating/:product_id', getProductWithRating);
+router.get('/ratings/:product_id', getProductWithRating);
 router.get('/', getProducts);
 router.get('/:product_id', getProduct);
 router.put('/:product_id', updateProduct);

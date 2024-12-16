@@ -5,7 +5,7 @@ const product_1 = require("../controllers/product");
 const router = (0, express_1.Router)();
 router.post('/', product_1.newProduct);
 router.get('/ratings/', product_1.getProductsWithRatings);
-router.get('/rating/:product_id', product_1.getProductWithRating);
+router.get('/ratings/:product_id', product_1.getProductWithRating);
 router.get('/', product_1.getProducts);
 router.get('/:product_id', product_1.getProduct);
 router.put('/:product_id', product_1.updateProduct);
