@@ -76,20 +76,30 @@ export const getReviews = async (req: Request, res: Response) => {
     res.json(listReviews)
 }
 
-//Obtener una review especifica
+//Obtener reviews para un producto especifico
 export const getReview = async (req: Request, res: Response) => {
+    const { product_id } = req.params; // Captura el product_id desde los parámetros de la solicitud
 
-    const { review_id } = req.params;
-    const review = await Review.findByPk(review_id);
+    try {
+        // Busca todas las valoraciones relacionadas con el product_id
+        const reviews = await Review.findAll({
+            where: { product_id } // Filtra las reviews por el product_id
+        });
 
-    if (review){
-        res.json(review)
-    } else {
-        res.status(404).json({
-            msg: 'No existe una review con el id: ' + review_id
-        })
+        if (reviews.length > 0) {
+            res.json(reviews); // Devuelve todas las valoraciones en formato JSON
+        } else {
+            res.status(404).json({
+                msg: `No existen valoraciones para el producto con id: ${product_id}`
+            });
+        }
+    } catch (error) {
+        console.error('Error al obtener las valoraciones:', error);
+        res.status(500).json({
+            msg: 'Hubo un error al obtener las valoraciones'
+        });
     }
-}
+};
 
 //Eliminar una review
 export const deleteReview = async (req: Request, res: Response) => {

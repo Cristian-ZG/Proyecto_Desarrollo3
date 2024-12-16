@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/', newReview)
 router.get('/', getReviews);
-router.get('/:review_id', getReview);
+router.get('/:product_id', getReview);
 router.put('/:review_id', updateReview);
 router.delete('/:review_id', deleteReview);
 

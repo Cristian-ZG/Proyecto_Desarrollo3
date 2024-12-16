@@ -80,16 +80,27 @@ const getReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     res.json(listReviews);
 });
 exports.getReviews = getReviews;
-//Obtener una review especifica
+//Obtener reviews para un producto especifico
 const getReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { review_id } = req.params;
-    const review = yield review_1.Review.findByPk(review_id);
-    if (review) {
-        res.json(review);
+    const { product_id } = req.params; // Captura el product_id desde los parámetros de la solicitud
+    try {
+        // Busca todas las valoraciones relacionadas con el product_id
+        const reviews = yield review_1.Review.findAll({
+            where: { product_id } // Filtra las reviews por el product_id
+        });
+        if (reviews.length > 0) {
+            res.json(reviews); // Devuelve todas las valoraciones en formato JSON
+        }
+        else {
+            res.status(404).json({
+                msg: `No existen valoraciones para el producto con id: ${product_id}`
+            });
+        }
     }
-    else {
-        res.status(404).json({
-            msg: 'No existe una review con el id: ' + review_id
+    catch (error) {
+        console.error('Error al obtener las valoraciones:', error);
+        res.status(500).json({
+            msg: 'Hubo un error al obtener las valoraciones'
         });
     }
 });

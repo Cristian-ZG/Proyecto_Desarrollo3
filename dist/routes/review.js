@@ -5,7 +5,7 @@ const review_1 = require("../controllers/review");
 const router = (0, express_1.Router)();
 router.post('/', review_1.newReview);
 router.get('/', review_1.getReviews);
-router.get('/:review_id', review_1.getReview);
+router.get('/:product_id', review_1.getReview);
 router.put('/:review_id', review_1.updateReview);
 router.delete('/:review_id', review_1.deleteReview);
 exports.default = router;
